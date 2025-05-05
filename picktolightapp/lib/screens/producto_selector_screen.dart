@@ -4,7 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:picktolightapp/models/producto.dart';
 import 'package:picktolightapp/screens/ar_screen.dart';
 import 'package:picktolightapp/widgets/mapa_2d.dart';
-
+import 'package:picktolightapp/screens/ar_paso_a_paso.dart';
+import 'package:picktolightapp/screens/qr_scanner_screen.dart';
 
 class ProductoSelectorScreen extends StatefulWidget {
   const ProductoSelectorScreen({super.key});
@@ -65,19 +66,57 @@ class _ProductoSelectorScreenState extends State<ProductoSelectorScreen> {
               leading: const Icon(Icons.route),
               title: const Text("Ruta paso a paso"),
               onTap: () {
-                // implementar pantalla futura
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ArRutaPasoAPaso(
+                    productos: seleccionados,
+                    inicio: Producto(id: "entrada", nombre: "Entrada", x: 0.5, y: 7.9),
+                  ),
+
+                  ),
+                );
               },
             ),
             ListTile(
               leading: const Icon(Icons.qr_code),
               title: const Text("Navegación con QR"),
               onTap: () {
-                // implementar pantalla futura
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => QrScannerScreen(
+                      onScanned: (qrCode) {
+                        _iniciarRutaDesdeQR(context, qrCode);
+                      },
+                    ),
+                  ),
+                );
               },
             ),
           ],
         );
       },
+    );
+  }
+
+  void _iniciarRutaDesdeQR(BuildContext context, String qrCode) {
+    final puntoInicio = productos.firstWhere(
+      (p) => p.qr == qrCode,
+      orElse: () => Producto(id: "entrada", nombre: "Entrada", x: 0.5, y: 7.9),
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ArRutaPasoAPaso(
+          productos: seleccionados,
+          inicio: puntoInicio, // viene del QR
+          )
+,
+      ),
     );
   }
 
