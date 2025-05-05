@@ -1,40 +1,31 @@
 {
     "productos": [
-      {
-        "id": "leche",
-        "nombre": "Leche entera",
-        "x": 1.0,
-        "y": 7.0,
-        "qr": "qr_leche"
-      },
-      {
-        "id": "pan",
-        "nombre": "Pan integral",
-        "x": 4.0,
-        "y": 5.0,
-        "qr": "qr_pan"
-      },
-      {
-        "id": "yogurt",
-        "nombre": "Yogurt natural",
-        "x": 2.5,
-        "y": 6.0,
-        "qr": "qr_yogurt"
-      },
-      {
-        "id": "arroz",
-        "nombre": "Arroz blanco",
-        "x": 7.0,
-        "y": 4.0,
-        "qr": "qr_arroz"
-      },
-      {
-        "id": "manzana",
-        "nombre": "Manzana roja",
-        "x": 1.0,
-        "y": 2.0,
-        "qr": "qr_manzana"
-      }
+      {"id": "abarrotes", "nombre": "Abarrotes", "x": 1.0, "y": 7.0},
+      {"id": "bebidas", "nombre": "Bebidas", "x": 3.0, "y": 7.0},
+      {"id": "carnes", "nombre": "Carnes", "x": 5.0, "y": 7.0},
+      {"id": "congelados", "nombre": "Congelados", "x": 7.0, "y": 7.0},
+      {"id": "fiambres", "nombre": "Fiambres", "x": 1.0, "y": 6.0},
+      {"id": "lacteos", "nombre": "Lácteos y Derivados", "x": 3.0, "y": 6.0},
+      {"id": "panaderia", "nombre": "Panadería", "x": 5.0, "y": 6.0},
+      {"id": "pasteleria", "nombre": "Pastelería y Masas Típicas", "x": 7.0, "y": 6.0},
+      {"id": "bebes", "nombre": "Cuidado del Bebé", "x": 1.0, "y": 5.0},
+      {"id": "hogar", "nombre": "Cuidado del Hogar", "x": 3.0, "y": 5.0},
+      {"id": "personal", "nombre": "Cuidado Personal", "x": 5.0, "y": 5.0},
+      {"id": "bazar_imp", "nombre": "Bazar Importación", "x": 7.0, "y": 5.0},
+      {"id": "bazar", "nombre": "Bazar", "x": 1.0, "y": 4.0},
+      {"id": "juguetes_imp", "nombre": "Juguetería Importación", "x": 3.0, "y": 4.0},
+      {"id": "jugueteria", "nombre": "Juguetería", "x": 5.0, "y": 4.0},
+      {"id": "farmacia", "nombre": "Farmacia", "x": 7.0, "y": 4.0},
+      {"id": "frutas", "nombre": "Frutas y Verduras", "x": 1.0, "y": 3.0},
+      {"id": "granos", "nombre": "Granos y Hortalizas", "x": 3.0, "y": 3.0},
+      {"id": "pastas", "nombre": "Pastas", "x": 5.0, "y": 3.0},
+      {"id": "galletas", "nombre": "Galletas", "x": 7.0, "y": 3.0},
+      {"id": "snacks", "nombre": "Snacks", "x": 1.0, "y": 2.0},
+      {"id": "cereales", "nombre": "Cereales", "x": 3.0, "y": 2.0},
+      {"id": "harinas", "nombre": "Harinas", "x": 5.0, "y": 2.0},
+      {"id": "salsas", "nombre": "Salsas y Condimentos", "x": 7.0, "y": 2.0},
+      {"id": "limpieza", "nombre": "Limpieza", "x": 3.0, "y": 1.0},
+      {"id": "otros", "nombre": "Otros", "x": 5.0, "y": 1.0}
     ]
   }
   

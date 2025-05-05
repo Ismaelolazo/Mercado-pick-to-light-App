@@ -3,14 +3,14 @@ class Producto {
   final String nombre;
   final double x;
   final double y;
-  final String qr;
+  final String? qr; // ← permite nulo
 
   Producto({
     required this.id,
     required this.nombre,
     required this.x,
     required this.y,
-    required this.qr,
+    this.qr,
   });
 
   factory Producto.fromJson(Map<String, dynamic> json) {
@@ -19,7 +19,7 @@ class Producto {
       nombre: json['nombre'],
       x: json['x'].toDouble(),
       y: json['y'].toDouble(),
-      qr: json['qr'],
+      qr: json['qr'] as String?, // ← seguro para valores nulos
     );
   }
 }

@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
+import '../models/producto.dart';
 
 class ArSupermercado extends StatefulWidget {
-  final Map<String, dynamic> producto;
-  const ArSupermercado({super.key, required this.producto});
+  final List<Producto> productos;
+  const ArSupermercado({super.key, required this.productos});
 
   @override
   State<ArSupermercado> createState() => _ArSupermercadoState();
@@ -53,26 +54,17 @@ class _ArSupermercadoState extends State<ArSupermercado> {
     final scale = 1.0;
 
     // Obtener punto de entrada
-    final entrada = zonas.firstWhere((z) => z["id"] == "entrada");
-    final double entradaX = entrada["x"];
-    final double entradaY = entrada["y"];
+    final zonaEntrada = zonas.firstWhere((z) => z['id'] == 'entrada');
+    double fromX = zonaEntrada['x'];
+    double fromY = zonaEntrada['y'];
 
-    // Usar el producto seleccionado como destino
-    final producto = widget.producto;
-    final destinoX = producto["x"];
-    final destinoY = producto["y"];
-
-    // Calcular ruta tipo L
-    final ruta = calcularRutaL(
-      entradaX,
-      entradaY,
-      destinoX,
-      destinoY,
-      scale,
-    );
-
-    // Dibujar la ruta
-    drawRoute(ruta);
+    // Dibujar rutas para cada producto seleccionado en orden
+    for (final p in widget.productos) {
+      final ruta = calcularRutaL(fromX, fromY, p.x, p.y, scale);
+      drawRoute(ruta);
+      fromX = p.x;
+      fromY = p.y;
+    }
   }
 
   void _displayGondola(Map<String, dynamic> g) {

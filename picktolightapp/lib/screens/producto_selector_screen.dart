@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'ar_screen.dart';
+import 'package:picktolightapp/models/producto.dart';
+import 'package:picktolightapp/screens/ar_screen.dart';
+import 'package:picktolightapp/widgets/mapa_2d.dart';
+
 
 class ProductoSelectorScreen extends StatefulWidget {
   const ProductoSelectorScreen({super.key});
@@ -11,8 +14,8 @@ class ProductoSelectorScreen extends StatefulWidget {
 }
 
 class _ProductoSelectorScreenState extends State<ProductoSelectorScreen> {
-  List<Map<String, dynamic>> productos = [];
-  Map<String, dynamic>? productoSeleccionado;
+  List<Producto> productos = [];
+  final List<Producto> seleccionados = [];
 
   @override
   void initState() {
@@ -24,50 +27,93 @@ class _ProductoSelectorScreenState extends State<ProductoSelectorScreen> {
     final jsonStr = await rootBundle.loadString('assets/data/productos.json');
     final data = jsonDecode(jsonStr);
     setState(() {
-      productos = List<Map<String, dynamic>>.from(data["productos"]);
+      productos = List<Map<String, dynamic>>.from(data["productos"])
+          .map((p) => Producto.fromJson(p))
+          .toList();
     });
+  }
+
+  void seleccionarModoNavegacion(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.view_in_ar),
+              title: const Text("Ruta en Realidad Aumentada"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => ArSupermercado(productos: seleccionados)),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.map),
+              title: const Text("Mapa 2D"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => Mapa2DWidget(productos: seleccionados)),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.route),
+              title: const Text("Ruta paso a paso"),
+              onTap: () {
+                // implementar pantalla futura
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.qr_code),
+              title: const Text("Navegación con QR"),
+              onTap: () {
+                // implementar pantalla futura
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Selecciona un producto")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            DropdownButton<Map<String, dynamic>>(
-              hint: const Text("Seleccionar producto"),
-              value: productoSeleccionado,
-              isExpanded: true,
-              items: productos.map((p) {
-                return DropdownMenuItem(
-                  value: p,
-                  child: Text(p["nombre"]),
-                );
-              }).toList(),
-              onChanged: (value) {
+      appBar: AppBar(title: const Text("Selecciona productos")),
+      body: ListView(
+        children: [
+          ...productos.map((p) {
+            final yaSeleccionado = seleccionados.contains(p);
+            return CheckboxListTile(
+              title: Text(p.nombre),
+              value: yaSeleccionado,
+              onChanged: (checked) {
                 setState(() {
-                  productoSeleccionado = value;
+                  if (checked == true) {
+                    seleccionados.add(p);
+                  } else {
+                    seleccionados.remove(p);
+                  }
                 });
               },
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: productoSeleccionado == null
+            );
+          }).toList(),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              onPressed: seleccionados.isEmpty
                   ? null
-                  : () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ArSupermercado(producto: productoSeleccionado!),
-                        ),
-                      );
-                    },
-              child: const Text("Iniciar recorrido en AR"),
+                  : () => seleccionarModoNavegacion(context),
+              child: const Text("Iniciar ruta"),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
