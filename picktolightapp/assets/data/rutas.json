@@ -1,0 +1,23 @@
+{
+    "rutas": [
+      {
+        "id": "ruta_rapida",
+        "nombre": "Recorrido eficiente",
+        "secuencia": ["entrada", "leche", "pan", "manzana", "puerta_salida"]
+      },
+      {
+        "id": "ruta_sin_lactosa",
+        "nombre": "Recorrido sin lácteos",
+        "secuencia": ["entrada", "pan", "manzana", "puerta_salida"]
+      },
+      {
+        "id": "ruta_entrada_a_producto",
+        "nombre": "Ruta desde entrada al producto",
+        "coordenadas": [
+          [0.5, 7.9],
+          [3.0, 7.9],
+          [3.0, 5.0]
+        ]
+      }
+    ]
+  }

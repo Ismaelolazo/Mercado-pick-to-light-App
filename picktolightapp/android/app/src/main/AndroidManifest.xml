@@ -1,4 +1,8 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.picktolightapp">
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera.ar" android:required="true"/>
     <application
         android:label="picktolightapp"
         android:name="${applicationName}"
@@ -30,6 +34,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Esto es obligatorio para ARCore -->
+        <meta-data android:name="com.google.ar.core" android:value="required" tools:replace="android:value" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

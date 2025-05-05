@@ -1,0 +1,40 @@
+{
+    "productos": [
+      {
+        "id": "leche",
+        "nombre": "Leche entera",
+        "x": 1.0,
+        "y": 7.0,
+        "qr": "qr_leche"
+      },
+      {
+        "id": "pan",
+        "nombre": "Pan integral",
+        "x": 4.0,
+        "y": 5.0,
+        "qr": "qr_pan"
+      },
+      {
+        "id": "yogurt",
+        "nombre": "Yogurt natural",
+        "x": 2.5,
+        "y": 6.0,
+        "qr": "qr_yogurt"
+      },
+      {
+        "id": "arroz",
+        "nombre": "Arroz blanco",
+        "x": 7.0,
+        "y": 4.0,
+        "qr": "qr_arroz"
+      },
+      {
+        "id": "manzana",
+        "nombre": "Manzana roja",
+        "x": 1.0,
+        "y": 2.0,
+        "qr": "qr_manzana"
+      }
+    ]
+  }
+  
