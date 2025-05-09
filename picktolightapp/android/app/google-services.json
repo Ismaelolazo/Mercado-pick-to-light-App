@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:202424309167:android:348f126c64cef390820b5a",
+        "mobilesdk_app_id": "1:202424309167:android:acc1106365b9e4e2820b5a",
         "android_client_info": {
-          "package_name": "com.ucb.bo"
+          "package_name": "com.example.picktolightapp"
         }
       },
       "oauth_client": [],

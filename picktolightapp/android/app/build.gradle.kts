@@ -9,7 +9,7 @@ plugins {
 android {
     namespace = "com.example.picktolightapp"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "29.0.13113456" // Actualiza la versión del NDK
 
     compileOptions {
         sourceCompatibility =JavaVersion.VERSION_11
