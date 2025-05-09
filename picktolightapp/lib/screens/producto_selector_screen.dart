@@ -6,6 +6,7 @@ import 'package:picktolightapp/screens/ar_screen.dart';
 import 'package:picktolightapp/widgets/mapa_2d.dart';
 import 'package:picktolightapp/screens/ar_paso_a_paso.dart';
 import 'package:picktolightapp/screens/qr_scanner_screen.dart';
+import 'package:picktolightapp/services/firebase_service.dart'; // ✅
 
 class ProductoSelectorScreen extends StatefulWidget {
   const ProductoSelectorScreen({super.key});
@@ -37,11 +38,17 @@ class _ProductoSelectorScreenState extends State<ProductoSelectorScreen> {
   void seleccionarModoNavegacion(BuildContext context) {
     showModalBottomSheet(
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
       builder: (_) {
         return Wrap(
           children: [
+            const ListTile(
+              title: Center(child: Text("Selecciona un modo de navegación")),
+            ),
             ListTile(
-              leading: const Icon(Icons.view_in_ar),
+              leading: const Icon(Icons.view_in_ar, color: Colors.orange),
               title: const Text("Ruta en Realidad Aumentada"),
               onTap: () {
                 Navigator.pop(context);
@@ -52,7 +59,7 @@ class _ProductoSelectorScreenState extends State<ProductoSelectorScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.map),
+              leading: const Icon(Icons.map, color: Colors.blue),
               title: const Text("Mapa 2D"),
               onTap: () {
                 Navigator.pop(context);
@@ -63,7 +70,7 @@ class _ProductoSelectorScreenState extends State<ProductoSelectorScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.route),
+              leading: const Icon(Icons.route, color: Colors.green),
               title: const Text("Ruta paso a paso"),
               onTap: () {
                 Navigator.pop(context);
@@ -71,16 +78,15 @@ class _ProductoSelectorScreenState extends State<ProductoSelectorScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (_) => ArRutaPasoAPaso(
-                    productos: seleccionados,
-                    inicio: Producto(id: "entrada", nombre: "Entrada", x: 0.5, y: 7.9),
-                  ),
-
+                      productos: seleccionados,
+                      inicio: Producto(id: "entrada", nombre: "Entrada", x: 0.5, y: 7.9),
+                    ),
                   ),
                 );
               },
             ),
             ListTile(
-              leading: const Icon(Icons.qr_code),
+              leading: const Icon(Icons.qr_code, color: Colors.indigo),
               title: const Text("Navegación con QR"),
               onTap: () {
                 Navigator.pop(context);
@@ -113,47 +119,94 @@ class _ProductoSelectorScreenState extends State<ProductoSelectorScreen> {
       MaterialPageRoute(
         builder: (_) => ArRutaPasoAPaso(
           productos: seleccionados,
-          inicio: puntoInicio, // viene del QR
-          )
-,
+          inicio: puntoInicio,
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final grouped = _agruparProductos(productos);
+
     return Scaffold(
-      appBar: AppBar(title: const Text("Selecciona productos")),
+      appBar: AppBar(
+        title: const Text("Selecciona tus productos"),
+        backgroundColor: Colors.orange,
+        foregroundColor: Colors.white,
+      ),
       body: ListView(
+        padding: const EdgeInsets.all(16),
         children: [
-          ...productos.map((p) {
-            final yaSeleccionado = seleccionados.contains(p);
-            return CheckboxListTile(
-              title: Text(p.nombre),
-              value: yaSeleccionado,
-              onChanged: (checked) {
-                setState(() {
-                  if (checked == true) {
-                    seleccionados.add(p);
-                  } else {
-                    seleccionados.remove(p);
-                  }
-                });
-              },
+          ...grouped.entries.map((entry) {
+            return ExpansionTile(
+              title: Text(entry.key),
+              collapsedBackgroundColor: Colors.orange.shade50,
+              children: entry.value.map((p) {
+                final yaSeleccionado = seleccionados.contains(p);
+                return CheckboxListTile(
+                  title: Text(p.nombre),
+                  value: yaSeleccionado,
+                  onChanged: (checked) {
+                    setState(() {
+                      if (checked == true) {
+                        seleccionados.add(p);
+                      } else {
+                        seleccionados.remove(p);
+                      }
+                    });
+                  },
+                );
+              }).toList(),
             );
-          }).toList(),
+          }),
           const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: seleccionados.isEmpty
-                  ? null
-                  : () => seleccionarModoNavegacion(context),
-              child: const Text("Iniciar ruta"),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.play_arrow),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
             ),
+            label: const Text("Iniciar ruta"),
+            onPressed: seleccionados.isEmpty
+                ? null
+                : () async {
+                    await FirebaseService.actualizarGondolasFirestore(seleccionados);
+
+                    seleccionarModoNavegacion(context);
+                  },
           ),
         ],
       ),
     );
+  }
+
+  /// Agrupa productos según categorías simuladas por posición
+  Map<String, List<Producto>> _agruparProductos(List<Producto> lista) {
+    Map<String, List<Producto>> resultado = {
+      "Alimentos y Bebidas": [],
+      "Hogar y Limpieza": [],
+      "Bazar y Juguetería": [],
+      "Salud y Cuidado Personal": [],
+      "Otros": []
+    };
+
+    for (var p in lista) {
+      final id = p.id.toLowerCase();
+      if (["abarrotes", "bebidas", "carnes", "congelados", "frutas", "granos", "pastas", "galletas", "cereales", "harinas", "salsas", "snacks", "panaderia", "pasteleria", "lacteos"].any(id.contains)) {
+        resultado["Alimentos y Bebidas"]!.add(p);
+      } else if (["limpieza", "hogar", "bazar"].any(id.contains)) {
+        resultado["Hogar y Limpieza"]!.add(p);
+      } else if (["juguete"].any(id.contains)) {
+        resultado["Bazar y Juguetería"]!.add(p);
+      } else if (["personal", "bebes", "farmacia"].any(id.contains)) {
+        resultado["Salud y Cuidado Personal"]!.add(p);
+      } else {
+        resultado["Otros"]!.add(p);
+      }
+    }
+
+    return resultado;
   }
 }
