@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:picktolightapp/screens/producto_selector_screen.dart';
+import 'package:picktolightapp/widgets/mapa_2d.dart'; // Asegúrate de tener esta importación
 import 'firebase_options.dart';
 
 void main() async {
@@ -96,6 +97,28 @@ class MenuPrincipal extends StatelessWidget {
                   );
                 },
               ),
+              ElevatedButton.icon(
+                icon: const Icon(Icons.map),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                  textStyle: const TextStyle(fontSize: 18),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                label: const Text("Ver Mapa 2D"),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => Mapa2DWidget(
+                        productos: [], // Proporciona una lista vacía o una lista de productos
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 20), // Espaciado entre botones
             ],
           ),
         ),

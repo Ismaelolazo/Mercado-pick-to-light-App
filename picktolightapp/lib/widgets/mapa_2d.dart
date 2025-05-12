@@ -77,39 +77,53 @@ class MapaPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final scaleX = size.width / 8.0;
     final scaleY = size.height / 8.0;
-
     final Paint paint = Paint();
 
-    // 1. Dibujar góndolas
+    // 🟫 Góndolas (diferente orientación por fila)
     for (var g in gondolas) {
+      final String id = g['id'];
       final x = g['x'] * scaleX;
-      final y = g['y'] * scaleY;
+      final y = g['y'] * scaleY; // Elimina la inversión del eje Y
       paint.color = Colors.brown.shade400;
-      canvas.drawRect(Rect.fromCenter(center: Offset(x, y), width: 0.4 * scaleX, height: 0.6 * scaleY), paint);
+
+      final int fila = g['fila'] ?? 0; // Asegúrate de que el JSON tenga un campo "fila"
+      final bool isFilaDe6 = fila <= 3; // Las primeras 3 filas tienen 6 góndolas
+
+      // Ajusta el tamaño y orientación según la fila
+      final double width = isFilaDe6 ? 0.6 * scaleX : 0.4 * scaleX;
+      final double height = isFilaDe6 ? 0.4 * scaleY : 0.8 * scaleY;
+
+      canvas.drawRect(
+        Rect.fromCenter(center: Offset(x, y), width: width, height: height),
+        paint,
+      );
     }
 
-    // 2. Dibujar estantes empotrados
+    // ⬛ Estantes empotrados
     for (var e in estantes) {
       final x = e['x'] * scaleX;
-      final y = e['y'] * scaleY;
-      paint.color = Colors.grey.shade700;
-      canvas.drawRect(Rect.fromCenter(center: Offset(x, y), width: 0.3 * scaleX, height: 0.8 * scaleY), paint);
+      final y = e['y'] * scaleY; // Elimina la inversión del eje Y
+      paint.color = Colors.grey.shade800;
+      canvas.drawRect(Rect.fromCenter(center: Offset(x, y), width: 0.3 * scaleX, height: 1.0 * scaleY), paint);
     }
 
-    // 3. Dibujar zonas clave
-    for (var z in zonas) {
+    // 🟥 Cajas
+    for (var z in zonas.where((z) => z['id'].toString().startsWith("caja"))) {
       final x = z['x'] * scaleX;
-      final y = z['y'] * scaleY;
-      paint.color = {
-        'entrada': Colors.blue,
-        'recepcion': Colors.green,
-        'caja_1': Colors.red,
-        'baño': Colors.indigo
-      }[z['id']] ?? Colors.black;
-      canvas.drawCircle(Offset(x, y), 10, paint);
+      final y = z['y'] * scaleY; // Elimina la inversión del eje Y
+      paint.color = Colors.red;
+      canvas.drawRect(Rect.fromCenter(center: Offset(x, y), width: 0.4 * scaleX, height: 0.5 * scaleY), paint);
     }
 
-    // 4. Dibujar productos seleccionados (con número)
+    // 🟩 Entrada y casilleros
+    for (var z in zonas.where((z) => z['id'] == "entrada" || z['id'] == "casilleros")) {
+      final x = z['x'] * scaleX;
+      final y = z['y'] * scaleY; // Elimina la inversión del eje Y
+      paint.color = Colors.green;
+      canvas.drawRect(Rect.fromCenter(center: Offset(x, y), width: 0.6 * scaleX, height: 0.6 * scaleY), paint);
+    }
+
+    // 🟠 Productos seleccionados (con número)
     final textPainter = TextPainter(
       textAlign: TextAlign.center,
       textDirection: TextDirection.ltr,
@@ -118,13 +132,11 @@ class MapaPainter extends CustomPainter {
     for (int i = 0; i < productos.length; i++) {
       final p = productos[i];
       final x = p.x * scaleX;
-      final y = p.y * scaleY;
+      final y = p.y * scaleY; // Elimina la inversión del eje Y
 
-      // Punto
       paint.color = Colors.orange;
       canvas.drawCircle(Offset(x, y), 10, paint);
 
-      // Número
       textPainter.text = TextSpan(
         text: "${i + 1}",
         style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
@@ -167,11 +179,9 @@ class LeyendaMapa extends StatelessWidget {
       alignment: WrapAlignment.center,
       children: [
         item(Colors.brown.shade400, "Góndola"),
-        item(Colors.grey.shade700, "Estante empotrado"),
-        item(Colors.blue, "Entrada", isCircle: true),
-        item(Colors.green, "Recepción", isCircle: true),
-        item(Colors.red, "Caja", isCircle: true),
-        item(Colors.indigo, "Baño", isCircle: true),
+        item(Colors.grey.shade800, "Estante empotrado"),
+        item(Colors.green, "Entrada/Casilleros"),
+        item(Colors.red, "Caja"),
         item(Colors.orange, "Producto seleccionado", isCircle: true),
       ],
     );
