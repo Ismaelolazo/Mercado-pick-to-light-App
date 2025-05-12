@@ -108,18 +108,31 @@ class _ProductoSelectorScreenState extends State<ProductoSelectorScreen> {
     );
   }
 
-  void _iniciarRutaDesdeQR(BuildContext context, String qrCode) {
-    final puntoInicio = productos.firstWhere(
-      (p) => p.qr == qrCode,
-      orElse: () => Producto(id: "entrada", nombre: "Entrada", x: 0.5, y: 7.9),
+  void _iniciarRutaDesdeQR(BuildContext context, String qrCode) async {
+    final jsonStr = await rootBundle.loadString('assets/data/mapa.json');
+    final data = jsonDecode(jsonStr);
+    final zonas = List<Map<String, dynamic>>.from(data["mapa"]["zonas"]);
+
+    // Busca la zona o góndola correspondiente al QR escaneado
+    final zona = zonas.firstWhere(
+      (z) => z["id"].toString().toLowerCase() == qrCode.toLowerCase(),
+      orElse: () => {"id": "entrada", "x": 6.5, "y": 7.5}, // Por defecto, usa "entrada"
     );
 
+    // Crea un punto de inicio basado en el QR escaneado
+    final puntoInicio = Producto(
+      id: zona["id"],
+      nombre: zona["id"],
+      x: zona["x"],
+      y: zona["y"],
+    );
+
+    // Navega al mapa 2D con el punto de inicio
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => ArRutaPasoAPaso(
-          productos: seleccionados,
-          inicio: puntoInicio,
+        builder: (_) => Mapa2DWidget(
+          productos: [...seleccionados, puntoInicio], // Incluye el punto de inicio como ancla visual
         ),
       ),
     );
@@ -172,10 +185,34 @@ class _ProductoSelectorScreenState extends State<ProductoSelectorScreen> {
             onPressed: seleccionados.isEmpty
                 ? null
                 : () async {
+                    // Habilita el envío a Firebase
                     await FirebaseService.actualizarGondolasFirestore(seleccionados);
 
                     seleccionarModoNavegacion(context);
                   },
+          ),
+          const SizedBox(height: 16),
+          ExpansionTile(
+            title: const Text("Ver productos seleccionados"),
+            children: [
+              ...seleccionados.asMap().entries.map((entry) {
+                final index = entry.key + 1;
+                final p = entry.value;
+                return ListTile(
+                  dense: true,
+                  leading: CircleAvatar(
+                    radius: 14,
+                    backgroundColor: Colors.orange,
+                    child: Text(
+                      '$index',
+                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                    ),
+                  ),
+                  title: Text(p.nombre),
+                  subtitle: Text("Góndola: ${p.gondola ?? "?"}"),
+                );
+              })
+            ],
           ),
         ],
       ),

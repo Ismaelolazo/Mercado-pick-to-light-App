@@ -26,4 +26,14 @@ class FirebaseService {
     // 3. Enviar actualización
     await _docRef.set(actualizacion);
   }
+
+  static Future<void> apagarTodasLasLuces() async {
+    final doc = FirebaseFirestore.instance.collection('Guiado').doc('EstadoGondolas');
+
+    final apagado = {
+      for (int i = 1; i <= 26; i++) "G${i.toString().padLeft(2, '0')}": false,
+    };
+
+    await doc.set(apagado);
+  }
 }

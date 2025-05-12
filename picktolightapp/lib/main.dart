@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:picktolightapp/screens/producto_selector_screen.dart';
-import 'package:picktolightapp/widgets/mapa_2d.dart'; // Asegúrate de tener esta importación
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    // Evita inicialización múltiple
     if (Firebase.apps.isEmpty) {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
@@ -27,7 +25,7 @@ class PickToLightApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Pick-to-Light AR',
+      title: 'Haipermax',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -50,7 +48,7 @@ class MenuPrincipal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sistema Pick-to-Light"),
+        title: const Text("Haipermax"),
         backgroundColor: Colors.orange,
         foregroundColor: Colors.white,
         elevation: 4,
@@ -71,7 +69,7 @@ class MenuPrincipal extends StatelessWidget {
               const Icon(Icons.shopping_cart_checkout, size: 80, color: Colors.white),
               const SizedBox(height: 20),
               const Text(
-                "Bienvenido al sistema Pick-to-Light",
+                "Bienvenido a Haipermax",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
@@ -97,28 +95,7 @@ class MenuPrincipal extends StatelessWidget {
                   );
                 },
               ),
-              ElevatedButton.icon(
-                icon: const Icon(Icons.map),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                  textStyle: const TextStyle(fontSize: 18),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                label: const Text("Ver Mapa 2D"),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => Mapa2DWidget(
-                        productos: [], // Proporciona una lista vacía o una lista de productos
-                      ),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 20), // Espaciado entre botones
+              const SizedBox(height: 20),
             ],
           ),
         ),

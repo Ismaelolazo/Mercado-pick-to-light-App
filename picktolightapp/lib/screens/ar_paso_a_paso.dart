@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:arcore_flutter_plugin/arcore_flutter_plugin.dart';
 import 'package:picktolightapp/models/producto.dart';
+import 'package:picktolightapp/services/firebase_service.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 import 'dart:convert';
 import 'package:flutter/services.dart';
@@ -57,6 +58,17 @@ class _ArRutaPasoAPasoState extends State<ArRutaPasoAPaso> {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: Colors.red,
+        icon: const Icon(Icons.power_settings_new),
+        label: const Text("Compra completada"),
+        onPressed: () async {
+          await FirebaseService.apagarTodasLasLuces();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Gracias por tu preferencia.")),
+          );
+        },
       ),
     );
   }
